@@ -35,11 +35,17 @@ public class VizControllerScript : MonoBehaviour
             print("Missing a visualization instance!");
             gameObject.SetActive(false);
         }
-        else
+        else if(wordEmbeddings != null && KGEmbeddings != null && corpus != null)
         {
             StartCoroutine(wordvis.SetData(wordEmbeddings));
-            StartCoroutine(kgvis.SetData(KGEmbeddings));
-            StartCoroutine(parservis.SetData(corpus));
+            //StartCoroutine(kgvis.SetData(KGEmbeddings));
+            //StartCoroutine(parservis.SetData(corpus));
+
+            StartCoroutine(wordvis.InitVisualization());
+        }
+        else
+        {
+            print("Missing TextAssets!");
         }
     }
 
