@@ -15,18 +15,15 @@ ent = list(set(ent[0]))
 _dict = {}
 
 for i in ent:
- print(i)
  temp = i.split()
  if temp[0] in model:
   temp2 = model[temp[0]]
  else:
   temp2 = np.zeros(300)
- #c = 1
  for j in range(1,len(temp)):
   if temp[j] in model:
    temp2 = np.add(temp2,model[temp[j]])
-   #c+=1
- temp2 =  np.linalg.norm(temp2)
+ temp2 =  temp2/np.linalg.norm(temp2)
  _dict.update({i:temp2})
 
 
