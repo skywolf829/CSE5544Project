@@ -41,7 +41,7 @@ public class VizControllerScript : MonoBehaviour
             //StartCoroutine(kgvis.SetData(KGEmbeddings));
             //StartCoroutine(parservis.SetData(corpus));
 
-            StartCoroutine(wordvis.InitVisualization());
+            StartCoroutine(wordvis.InitVisualizationParticleSystem());
         }
         else
         {
