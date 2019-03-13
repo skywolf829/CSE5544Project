@@ -5,6 +5,7 @@ using UnityEngine;
 public class VizControllerScript : MonoBehaviour
 {
     public static VizControllerScript instance;
+    public float moveSpeed = 1;
 
     public TextAsset wordEmbeddings, KGEmbeddings, corpus;
 
@@ -38,10 +39,11 @@ public class VizControllerScript : MonoBehaviour
         else if(wordEmbeddings != null && KGEmbeddings != null && corpus != null)
         {
             StartCoroutine(wordvis.SetData(wordEmbeddings));
-            //StartCoroutine(kgvis.SetData(KGEmbeddings));
+            StartCoroutine(kgvis.SetData(KGEmbeddings));
             //StartCoroutine(parservis.SetData(corpus));
 
             StartCoroutine(wordvis.InitVisualizationParticleSystem());
+            StartCoroutine(kgvis.InitVisualizationParticleSystem());
         }
         else
         {
@@ -49,9 +51,26 @@ public class VizControllerScript : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TriggerPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
-        
+
+    }
+
+    public void TriggerReleased(object sender, VRTK.ControllerInteractionEventArgs e)
+    {
+
+    }
+
+    public void TouchpadInput(object sender, VRTK.ControllerInteractionEventArgs e)
+    {
+        if (!Camera.main.gameObject) return;
+        Transform playerCam = Camera.main.transform;
+        Vector3 forwardOnPlane = playerCam.forward - Vector3.Dot(playerCam.forward, Vector3.up) * Vector3.up;
+        Vector3 rightOnPlane = playerCam.right - Vector3.Dot(playerCam.right, Vector3.up) * Vector3.up;
+        GameObject.FindWithTag("Player").transform.Translate(
+            (forwardOnPlane.normalized * e.touchpadAxis.y + 
+            rightOnPlane.normalized * e.touchpadAxis.x)
+            .normalized 
+            * moveSpeed * e.touchpadAxis.magnitude * Time.time, Space.World);
     }
 }

@@ -10,6 +10,7 @@ loaded = False
 embeddings = {}
 entries = []
 PCA_embeddings = {}
+
 if os.path.getsize(sys.argv[1]) > 0:
     with open(sys.argv[1], "rb") as f:
         unpickler = pickle.Unpickler(f)
@@ -24,7 +25,7 @@ if loaded:
         if ~numpy.isnan(value).any():
             entries.append(value)
         else:
-            entries.append(np.zeros(300))
+            entries.append(np.zeros(value.size))
         
     entries = np.array(entries)
     embeddings_std = StandardScaler().fit_transform(entries)
@@ -33,7 +34,6 @@ if loaded:
     i = 0
     for key, value in embeddings.items():
         PCA_embeddings[key.replace("'", "").replace("\"", "")] = embeddings_std[i].tolist()
-        #print(key + " " + str(PCA_embeddings[key]))
         i = i + 1
     
-    pickle.dump(PCA_embeddings, open(sys.argv[1].split(".")[0] + "reduced" + sys.argv[2] + ".pkl", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(PCA_embeddings, open(sys.argv[3] + "_PCA_" + sys.argv[2] + "dimensions.pkl", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
