@@ -21,6 +21,6 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
     }
     public IEnumerator SetData(TextAsset t)
     {
-        yield return embeddings = DataImporter.LoadKGEmbeddings(t);
+        yield return embeddings = DataImporter.LoadKGEmbeddings2D(t);
     }
 }

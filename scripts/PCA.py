@@ -32,8 +32,8 @@ if loaded:
     
     i = 0
     for key, value in embeddings.items():
-        PCA_embeddings[key] = embeddings_std[i]
+        PCA_embeddings[key.replace("'", "").replace("\"", "")] = embeddings_std[i].tolist()
         #print(key + " " + str(PCA_embeddings[key]))
         i = i + 1
     
-    pickle.dump(embeddings_std, open(sys.argv[1].split(".")[0] + "reduced" + sys.argv[2] + ".pkl", "wb"))
+    pickle.dump(PCA_embeddings, open(sys.argv[1].split(".")[0] + "reduced" + sys.argv[2] + ".pkl", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
