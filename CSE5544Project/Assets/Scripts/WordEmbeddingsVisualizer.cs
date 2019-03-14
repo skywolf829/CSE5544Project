@@ -35,7 +35,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         List<string> f = new List<string>();
         foreach(KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
         {
-            if(Vector3.Distance(g.transform.position, pair.Key.position) < g.transform.localScale.x)
+            if(Vector3.Distance(g.transform.position, pair.Key.position + transform.position) < g.transform.localScale.x)
             {
                 f.Add(pair.Value);
             }
