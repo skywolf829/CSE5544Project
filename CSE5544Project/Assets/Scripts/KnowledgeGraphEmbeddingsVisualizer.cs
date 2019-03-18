@@ -5,19 +5,19 @@ using TMPro;
 
 public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
 {
-
     public float width = 2f;
     public GameObject TMProPrefab;
     public Material boundsMaterial;
     public Material particleMaterialMobile;
-
     public static KnowledgeGraphEmbeddingsVisualizer instance;
 
     Dictionary<string, float[]> embeddings;
+    Dictionary<ParticleSystem.Particle, string> particleToKey;
+    Dictionary<string, ParticleSystem.Particle> keyToParticle;
     bool loadedData = false;
     float[] minValues, maxValues, differences;
     ParticleSystem.Particle[] particles;
-
+    List<string> filters;
     private void Awake()
     {
         if (instance == null)
@@ -29,11 +29,42 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             Destroy(this.gameObject);
 
         }
+#if UNITY_ANDROID
+        GetComponent<ParticleSystemRenderer>().material = particleMaterialMobile;
+#endif
     }
 
+    public Dictionary<string, Vector3> GetFilterSelectionDict(Vector3 pos, float dist)
+    {
+        Dictionary<string, Vector3> f = new Dictionary<string, Vector3>();
+        foreach (KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
+        {
+            if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+            {
+                f.Add(pair.Value, pair.Key.position + transform.position);
+            }
+        }
+        return f;
+    }
+    public List<string> GetFilterSelection(Vector3 pos, float dist)
+    {
+        if (particleToKey == null)
+        {
+            return new List<string>();
+        }
+        List<string> f = new List<string>();
+        foreach (KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
+        {
+            if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+            {
+                f.Add(pair.Value);
+            }
+        }
+        return f;
+    }
     public IEnumerator SetData(TextAsset t)
     {
-        yield return embeddings = DataImporter.LoadKGEmbeddings(t);
+        yield return embeddings = DataImporter.LoadWord2VecEmbeddings(t);
         PreProcessData();
         CreateBounds();
         loadedData = true;
@@ -185,75 +216,82 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             differences[i] = maxValues[i] - minValues[i];
         }
     }
-    public IEnumerator InitVisualizationGameObjects()
+    public IEnumerator UpdateVisualization(List<string> filters = null, bool scaled = false, int numPerUpdate = 0)
     {
         while (!loadedData) yield return null;
 
-        foreach (KeyValuePair<string, float[]> pair in embeddings)
-        {
-            GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            g.transform.localScale = Vector3.one * 0.1f;
 
-            if (pair.Value.Length == 2)
-            {
-                g.transform.position = new Vector2(pair.Value[0], pair.Value[1]);
-                g.GetComponent<Renderer>().material.color = Color.HSVToRGB(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]),
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]), 1);
-            }
-            else if (pair.Value.Length == 3)
-            {
-                g.transform.position = new Vector3(pair.Value[0], pair.Value[1], pair.Value[2]);
-                g.GetComponent<Renderer>().material.color = Color.HSVToRGB(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]),
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]),
-                    Mathf.InverseLerp(minValues[2], maxValues[2], pair.Value[2]));
-            }
-            g.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            g.GetComponent<Renderer>().receiveShadows = false;
-            g.transform.SetParent(transform, false);
-        }
-    }
-    public IEnumerator InitVisualizationParticleSystem()
-    {
-        while (!loadedData) yield return null;
         ParticleSystem.MainModule mainModule = GetComponent<ParticleSystem>().main;
-#if UNITY_ANDROID
-        GetComponent<ParticleSystemRenderer>().material = particleMaterialMobile;
-#endif
-        mainModule.maxParticles = embeddings.Count;
-        particles = new ParticleSystem.Particle[embeddings.Count];
-        int i = 0;
-        foreach (KeyValuePair<string, float[]> pair in embeddings)
+        if (filters == null || filters.Count == 0)
         {
-            if (TMProPrefab)
+            filters = new List<string>();
+            foreach (string s in embeddings.Keys)
             {
-                GameObject text = GameObject.Instantiate(TMProPrefab);
-                text.GetComponent<TextMeshPro>().text = pair.Key;
-                text.transform.position = new Vector3(pair.Value[0], pair.Value[1] + text.GetComponent<TextMeshPro>().fontSize, pair.Value.Length > 2 ? pair.Value[2] : 0);
-                text.transform.SetParent(transform, false);
+                filters.Add(s);
             }
+        }
+        this.filters = filters;
+        mainModule.maxParticles = filters.Count;
+        particles = new ParticleSystem.Particle[filters.Count];
+        int i = 0;
+        particleToKey = new Dictionary<ParticleSystem.Particle, string>();
+        keyToParticle = new Dictionary<string, ParticleSystem.Particle>();
 
-            particles[i] = new ParticleSystem.Particle();
-            if (pair.Value.Length == 2)
+        float[] tempMin = new float[minValues.Length];
+        float[] tempMax = new float[maxValues.Length];
+        float size = 0.25f * width / Mathf.Min(differences);
+        if (scaled)
+        {
+            for (i = 0; i < filters.Count; i++)
             {
-                particles[i].position = new Vector2(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]) * width - width / 2f,
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]) * width - width / 2f);
-                particles[i].startColor = Color.HSVToRGB(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]),
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]), 1);
+                for (int j = 0; j < tempMax.Length; j++)
+                {
+                    tempMin[j] = Mathf.Min(tempMin[j], embeddings[filters[i]][j]);
+                    tempMax[j] = Mathf.Max(tempMax[j], embeddings[filters[i]][j]);
+                }
             }
-            else if (pair.Value.Length == 3)
+        }
+        else
+        {
+            tempMin = minValues;
+            tempMax = maxValues;
+        }
+        i = 0;
+
+        foreach (string s in filters)
+        {
+            particles[i] = new ParticleSystem.Particle();
+            float[] currentValues = new float[] {
+                (Mathf.InverseLerp(tempMin[0], tempMax[0], embeddings[s][0]) - 0.5f) * width,
+                    (Mathf.InverseLerp(tempMin[1],tempMax[1], embeddings[s][1]) - 0.5f) * width,
+                    minValues.Length == 3 ? (Mathf.InverseLerp(tempMin[2],tempMax[2], embeddings[s][2]) - 0.5f) * width : 0
+            };
+            if (embeddings[s].Length == 2)
             {
-                particles[i].position = new Vector3(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]) * width - width / 2f,
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]) * width - width / 2f,
-                    Mathf.InverseLerp(minValues[2], maxValues[2], pair.Value[2]) * width - width / 2f);
-                particles[i].startColor = new Color(Mathf.InverseLerp(minValues[0], maxValues[0], pair.Value[0]),
-                    Mathf.InverseLerp(minValues[1], maxValues[1], pair.Value[1]),
-                    Mathf.InverseLerp(minValues[2], maxValues[2], pair.Value[2]));
+                particles[i].position = new Vector2(currentValues[0], currentValues[1]);
+
+                particles[i].startColor = Color.HSVToRGB(currentValues[0], currentValues[1], 1);
+            }
+            else if (embeddings[s].Length == 3)
+            {
+                particles[i].position = new Vector3(currentValues[0], currentValues[1], currentValues[2]);
+                particles[i].startColor = new Color(currentValues[0], currentValues[1], currentValues[2]);
             }
             particles[i].rotation3D = Vector3.zero;
-            particles[i].startSize = 0.25f * width / Mathf.Min(differences); ;
+            particles[i].startSize = size;
+            particles[i].randomSeed = (uint)s.GetHashCode();
+            particleToKey.Add(particles[i], s);
+            keyToParticle.Add(s, particles[i]);
+
+
             i++;
-            //yield return null;
+            if (numPerUpdate != 0 && i % numPerUpdate == 0)
+            {
+                GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
+                yield return null;
+            }
         }
         GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
+        yield return null;
     }
 }

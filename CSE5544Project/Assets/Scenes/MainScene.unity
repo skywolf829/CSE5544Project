@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 104747868}
   m_Layer: 0
   m_Name: WindowsMR
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -970,6 +970,8 @@ MonoBehaviour:
   wordEmbeddings: {fileID: 4900000, guid: 53bafe0395ad26949bf66a3d9143d66b, type: 3}
   KGEmbeddings: {fileID: 4900000, guid: e0ba4c73ece415b4faefd4eb7d29ebbc, type: 3}
   corpus: {fileID: 4900000, guid: 193ccdeca93203d4f9f771a53bcea33d, type: 3}
+  TMProPrefab: {fileID: 440739062717727856, guid: 108c9e0dcbadd384a96d6f62097949db,
+    type: 3}
   transparentMat: {fileID: 2100000, guid: 710a6a630b286a14ebc3f7933b10a638, type: 2}
 --- !u!4 &224302593
 Transform:
@@ -1595,7 +1597,7 @@ GameObject:
   - component: {fileID: 329179966}
   m_Layer: 0
   m_Name: VRSimulator
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8907,7 +8909,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e522f5cd60d097342b31e7f5599fa09b, type: 2}
+  - {fileID: 2100000, guid: 4a394c1eef968264abddd8d579e78d6f, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -13835,7 +13837,7 @@ GameObject:
   - component: {fileID: 1358551501}
   m_Layer: 0
   m_Name: SteamVR
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14248,28 +14250,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1447209664
@@ -15958,7 +15938,7 @@ GameObject:
   - component: {fileID: 1866258681}
   m_Layer: 0
   m_Name: Oculus
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17119,7 +17099,7 @@ GameObject:
   - component: {fileID: 2139638018}
   m_Layer: 0
   m_Name: UnityXR
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
