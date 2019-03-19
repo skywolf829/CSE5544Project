@@ -41,7 +41,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         {
             if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
             {
-                f.Add(pair.Value, pair.Key.position + transform.position);
+                if(!f.ContainsKey(pair.Value)) f.Add(pair.Value, pair.Key.position + transform.position);
             }
         }
         return f;
@@ -57,7 +57,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         {
             if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
             {
-                f.Add(pair.Value);
+                if(!f.Contains(pair.Value)) f.Add(pair.Value);
             }
         }
         return f;
@@ -280,6 +280,8 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             particles[i].rotation3D = Vector3.zero;
             particles[i].startSize = size;
             particles[i].randomSeed = (uint)s.GetHashCode();
+            particles[i].axisOfRotation = new Vector3(Random.value, Random.value, Random.value);
+
             particleToKey.Add(particles[i], s);
             keyToParticle.Add(s, particles[i]);
 

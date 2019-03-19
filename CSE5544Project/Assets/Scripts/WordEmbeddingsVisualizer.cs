@@ -41,7 +41,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         {
             if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
             {
-                f.Add(pair.Value, pair.Key.position + transform.position);
+                if (!f.ContainsKey(pair.Value)) f.Add(pair.Value, pair.Key.position + transform.position);
             }
         }
         return f;
@@ -57,7 +57,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         {
             if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
             {
-                f.Add(pair.Value);
+                if(!f.Contains(pair.Value)) f.Add(pair.Value);
             }
         }
         return f;
@@ -220,7 +220,6 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
     {
         while (!loadedData) yield return null;
 
-
         ParticleSystem.MainModule mainModule = GetComponent<ParticleSystem>().main;
         if(filters == null || filters.Count == 0)
         {
@@ -259,7 +258,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         i = 0;
         
         foreach (string s in filters)
-        {
+        {            
             particles[i] = new ParticleSystem.Particle();
             float[] currentValues = new float[] {
                 (Mathf.InverseLerp(tempMin[0], tempMax[0], embeddings[s][0]) - 0.5f) * width,
@@ -280,6 +279,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             particles[i].rotation3D = Vector3.zero;
             particles[i].startSize = size;
             particles[i].randomSeed = (uint)s.GetHashCode();
+            particles[i].axisOfRotation = new Vector3(Random.value, Random.value, Random.value);
             particleToKey.Add(particles[i], s);
             keyToParticle.Add(s, particles[i]);
             

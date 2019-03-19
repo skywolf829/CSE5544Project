@@ -10,76 +10,33 @@ public static class DataImporter
           JsonConvert.DeserializeObject<Dictionary<string, float[]>>(t.text.Substring(1, t.text.Length - 2));
         return embeddings2D;
     }
-    public static Dictionary<string, Vector2> LoadWord2VecEmbeddings2D(TextAsset t)
-    {
-        Dictionary<string, string> embeddings =
-           JsonConvert.DeserializeObject<Dictionary<string, string>>(t.text.Substring(1, t.text.Length - 2));
-
-        Dictionary<string, Vector2> embeddings2D =
-            new Dictionary<string, Vector2>();
-        foreach(KeyValuePair<string, string> pair in embeddings)
-        {
-            string[] split = pair.Value.Split(new char[] { ',' });
-            Vector2 v = new Vector2(float.Parse(split[0]), float.Parse(split[1]));
-            embeddings2D.Add(pair.Key, v);
-        }
-        return embeddings2D;
-    }
-    public static Dictionary<string, Vector3> LoadWord2VecEmbeddings3D(TextAsset t)
-    {
-        Dictionary<string, string> embeddings =
-           JsonConvert.DeserializeObject<Dictionary<string, string>>(t.text.Substring(1, t.text.Length - 2));
-
-        Dictionary<string, Vector3> embeddings2D =
-            new Dictionary<string, Vector3>();
-        foreach (KeyValuePair<string, string> pair in embeddings)
-        {
-            string[] split = pair.Value.Split(new char[] { ',' });
-            Vector2 v = new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
-            embeddings2D.Add(pair.Key, v);
-        }
-        return embeddings2D;
-    }
+   
     public static Dictionary<string, float[]> LoadKGEmbeddings(TextAsset t)
     {
         Dictionary<string, float[]> embeddings2D =
           JsonConvert.DeserializeObject<Dictionary<string, float[]>>(t.text.Substring(1, t.text.Length - 2));
         return embeddings2D;
     }
-    public static Dictionary<string, Vector2> LoadKGEmbeddings2D(TextAsset t)
+    public static List<string[]> LoadParserData(TextAsset t)
     {
-        Dictionary<string, string> embeddings =
-           JsonConvert.DeserializeObject<Dictionary<string, string>>(t.text.Substring(1,t.text.Length - 2));
+        List<string[]> data = new List<string[]>();
 
-        Dictionary<string, Vector2> embeddings2D =
-            new Dictionary<string, Vector2>();
-        foreach (KeyValuePair<string, string> pair in embeddings)
+        string[] lines = t.text.Split(new char[] { '\n' });
+        for(int i = 0; i < lines.Length; i++)
         {
-            string[] split = pair.Value.Split(new char[] { ',' });
-            Vector2 v = new Vector2(float.Parse(split[0]), float.Parse(split[1]));
-            embeddings2D.Add(pair.Key, v);
+            string[] SOPtriple = lines[i].Split(new char[] { '\t' });
+            if(SOPtriple.Length != 3)
+            {
+                Debug.Log("Error on " + SOPtriple);
+            }
+            else
+            {
+                if (SOPtriple[0].Contains("'")) SOPtriple[0] = SOPtriple[0].Replace("\'", "");
+                if (SOPtriple[1].Contains("'")) SOPtriple[1] = SOPtriple[1].Replace("\'", "");
+                if (SOPtriple[2].Contains("'")) SOPtriple[2] = SOPtriple[2].Replace("\'", "");
+                data.Add(SOPtriple);
+            }
         }
-        return embeddings2D;
-    }
-    public static Dictionary<string, Vector3> LoadKGEmbeddings3D(TextAsset t)
-    {
-        Dictionary<string, string> embeddings =
-           JsonConvert.DeserializeObject<Dictionary<string, string>>(t.text.Substring(1, t.text.Length - 2));
-
-        Dictionary<string, Vector3> embeddings2D =
-            new Dictionary<string, Vector3>();
-        foreach (KeyValuePair<string, string> pair in embeddings)
-        {
-            string[] split = pair.Value.Split(new char[] { ',' });
-            Vector2 v = new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
-            embeddings2D.Add(pair.Key, v);
-        }
-        return embeddings2D;
-    }
-    public static List<List<string>> LoadParserData(TextAsset t)
-    {
-        List<List<string>> data = new List<List<string>>();
-
         return data;
     }
 }

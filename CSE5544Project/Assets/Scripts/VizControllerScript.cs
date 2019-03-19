@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class VizControllerScript : MonoBehaviour
 {
@@ -54,7 +55,7 @@ public class VizControllerScript : MonoBehaviour
         {
             StartCoroutine(wordvis.SetData(wordEmbeddings));
             StartCoroutine(kgvis.SetData(KGEmbeddings));
-            //StartCoroutine(parservis.SetData(corpus));
+            StartCoroutine(parservis.SetData(corpus));
 
             StartCoroutine(wordvis.UpdateVisualization(null, false, 100));
             StartCoroutine(kgvis.UpdateVisualization(null, false, 100));
@@ -68,6 +69,10 @@ public class VizControllerScript : MonoBehaviour
 
     public void GripPressed(object o, ControllerInteractionEventArgs e)
     {
+        if (!WordEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(e.controllerReference.actual.transform.position)
+            && !KnowledgeGraphEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(e.controllerReference.actual.transform.position))
+            return;
+
         controllerRef = e.controllerReference;
         print(e.controllerReference);
         selectionBubble = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -81,6 +86,7 @@ public class VizControllerScript : MonoBehaviour
     }
     public void GripReleased(object o, ControllerInteractionEventArgs e)
     {
+        if (!selectionBubble) return;
         controllerRef = null;
         if (WordEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(selectionBubble.transform.position))
         {
@@ -89,6 +95,7 @@ public class VizControllerScript : MonoBehaviour
             {
                 visScaled = false;
                 StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
+                StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
             }
         }
         else if (KnowledgeGraphEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(selectionBubble.transform.position))
@@ -98,10 +105,26 @@ public class VizControllerScript : MonoBehaviour
             {
                 visScaled = false;
                 StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+                StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
             }
         }        
         Destroy(selectionBubble);
         selectionBubble = null;
+    }
+    public void TriggerReleased(object o, ControllerInteractionEventArgs e)
+    {
+        RaycastHit[] rchs = Physics.RaycastAll(new Ray(e.controllerReference.actual.transform.position, e.controllerReference.actual.transform.forward), Mathf.Infinity);
+        for(int i = 0; i < rchs.Length; i++)
+        {
+            if(rchs[i].collider.transform.tag == "Predicate")
+            {
+                string filterTerm = rchs[i].collider.GetComponent<TextMeshProUGUI>().text;
+                currentFilters = parservis.CreateFilterFromPredicate(filterTerm);
+                print(currentFilters.Count);
+                StartCoroutine(wordvis.UpdateVisualization(currentFilters, false, 100));
+                StartCoroutine(kgvis.UpdateVisualization(currentFilters, false, 100));
+            }
+        }
     }
     public void ButtonOnePressed(object o, ControllerInteractionEventArgs e)
     {
