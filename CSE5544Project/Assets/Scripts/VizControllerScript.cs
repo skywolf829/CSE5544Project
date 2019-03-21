@@ -157,7 +157,7 @@ public class VizControllerScript : MonoBehaviour
             (forwardOnPlane.normalized * e.touchpadAxis.y + 
             rightOnPlane.normalized * e.touchpadAxis.x)
             .normalized 
-            * moveSpeed * e.touchpadAxis.magnitude * Time.time, Space.World);
+            * moveSpeed * e.touchpadAxis.magnitude * Time.deltaTime, Space.World);
     }
     
     IEnumerator VisibleTextFromHandPositions()

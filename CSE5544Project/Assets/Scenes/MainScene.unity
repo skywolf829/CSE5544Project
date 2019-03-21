@@ -2552,6 +2552,103 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526858621}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &538748790
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 148444, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_Name
+      value: FramesPerSecondCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22449092, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 39aa6e3f7c442a04d997c9ed23f46981, type: 3}
 --- !u!1 &573985638
 GameObject:
   m_ObjectHideFlags: 0
@@ -3831,6 +3928,7 @@ GameObject:
   - component: {fileID: 941821679}
   - component: {fileID: 941821678}
   - component: {fileID: 941821677}
+  - component: {fileID: 941821680}
   m_Layer: 0
   m_Name: BaseFloor
   m_TagString: Untagged
@@ -3910,6 +4008,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 941821675}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &941821680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941821675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef7e6bfad51b1f24f8bba548c8dcecb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blinkToColor: {r: 0, g: 0, b: 0, a: 1}
+  blinkTransitionSpeed: 0.6
+  distanceBlinkDelay: 0
+  headsetPositionCompensation: 1
+  targetListPolicy: {fileID: 0}
+  navMeshData: {fileID: 0}
+  navMeshLimitDistance: 0
 --- !u!1 &962430941
 GameObject:
   m_ObjectHideFlags: 0
@@ -14562,11 +14679,11 @@ MonoBehaviour:
   enableTeleport: 1
   targetListPolicy: {fileID: 0}
   pointerRenderer: {fileID: 1364455384}
-  activationButton: 10
-  holdButtonToActivate: 1
-  activateOnEnable: 0
+  activationButton: 0
+  holdButtonToActivate: 0
+  activateOnEnable: 1
   activationDelay: 0
-  selectionButton: 10
+  selectionButton: 2
   selectOnPress: 0
   selectionDelay: 0
   selectAfterHoverDuration: 0
@@ -14625,11 +14742,11 @@ MonoBehaviour:
   disableOtherControlsOnActive: 1
   affectOnFalling: 0
   controlOverrideObject: {fileID: 0}
-  controller: {fileID: 0}
+  controller: {fileID: 1364455380}
   bodyPhysics: {fileID: 0}
   coordinateAxis: 1
-  primaryActivationButton: 9
-  actionModifierButton: 10
+  primaryActivationButton: 0
+  actionModifierButton: 0
   axisDeadzone: {x: 0.2, y: 0.2}
 --- !u!1 &1366481821
 GameObject:
@@ -16824,7 +16941,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866258679}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0023, y: 1.533, z: 0.331}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 734196686}
@@ -16855,22 +16972,22 @@ MonoBehaviour:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
     typeName: VRTK.SDK_OculusSystem
-    descriptionIndex: 0
+    descriptionIndex: 1
   cachedBoundariesSDKInfo:
     baseTypeName: VRTK.SDK_BaseBoundaries
     fallbackTypeName: VRTK.SDK_FallbackBoundaries
     typeName: VRTK.SDK_OculusBoundaries
-    descriptionIndex: 0
+    descriptionIndex: 1
   cachedHeadsetSDKInfo:
     baseTypeName: VRTK.SDK_BaseHeadset
     fallbackTypeName: VRTK.SDK_FallbackHeadset
     typeName: VRTK.SDK_OculusHeadset
-    descriptionIndex: 0
+    descriptionIndex: 1
   cachedControllerSDKInfo:
     baseTypeName: VRTK.SDK_BaseController
     fallbackTypeName: VRTK.SDK_FallbackController
     typeName: VRTK.SDK_OculusController
-    descriptionIndex: 0
+    descriptionIndex: 1
 --- !u!1 &1892108898
 GameObject:
   m_ObjectHideFlags: 0
@@ -17575,11 +17692,11 @@ MonoBehaviour:
   enableTeleport: 1
   targetListPolicy: {fileID: 0}
   pointerRenderer: {fileID: 2010497226}
-  activationButton: 10
-  holdButtonToActivate: 1
-  activateOnEnable: 0
+  activationButton: 0
+  holdButtonToActivate: 0
+  activateOnEnable: 1
   activationDelay: 0
-  selectionButton: 10
+  selectionButton: 2
   selectOnPress: 0
   selectionDelay: 0
   selectAfterHoverDuration: 0
@@ -17638,11 +17755,11 @@ MonoBehaviour:
   disableOtherControlsOnActive: 1
   affectOnFalling: 0
   controlOverrideObject: {fileID: 0}
-  controller: {fileID: 0}
+  controller: {fileID: 2010497221}
   bodyPhysics: {fileID: 0}
   coordinateAxis: 1
-  primaryActivationButton: 9
-  actionModifierButton: 10
+  primaryActivationButton: 0
+  actionModifierButton: 0
   axisDeadzone: {x: 0.2, y: 0.2}
 --- !u!1 &2015855276
 GameObject:
