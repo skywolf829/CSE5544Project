@@ -12,9 +12,11 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
     public static WordEmbeddingsVisualizer instance;
 
     Dictionary<string, float[]> embeddings;
+    Dictionary<string, string[]> embeddingColors;
     Dictionary<ParticleSystem.Particle, string> particleToKey;
     Dictionary<string, ParticleSystem.Particle> keyToParticle;
     bool loadedData = false;
+    bool colorsLoaded = false;
     float[] minValues, maxValues, differences;
     ParticleSystem.Particle[] particles;
     List<string> filters;
@@ -68,6 +70,13 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         PreProcessData();
         CreateBounds();
         loadedData = true;
+        print("Embeddings count " + embeddings.Count);
+    }
+    public IEnumerator SetColorData(TextAsset t)
+    {
+        yield return embeddingColors = DataImporter.LoadEmbeddingColors(t);
+        colorsLoaded = true;
+        print("Color count " + embeddingColors.Count);
     }
     private void CreateBounds()
     {
@@ -216,9 +225,21 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             differences[i] = maxValues[i] - minValues[i];
         }        
     }
+    private Color getColorForEmbedding(string s)
+    {
+        
+        Color c = Color.black;
+        if(embeddingColors.ContainsKey(s))
+            ColorUtility.TryParseHtmlString(embeddingColors[s][0], out c);
+        else
+        {
+            //print("Colors dict missing " + s);
+        }
+        return c;
+    }
     public IEnumerator UpdateVisualization(List<string> filters = null, bool scaled = false, int numPerUpdate = 0)
     {
-        while (!loadedData) yield return null;
+        while (!loadedData || !colorsLoaded) yield return null;
 
         ParticleSystem.MainModule mainModule = GetComponent<ParticleSystem>().main;
         if(filters == null || filters.Count == 0)
@@ -269,12 +290,12 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             {
                 particles[i].position = new Vector2(currentValues[0], currentValues[1]);
 
-                particles[i].startColor = Color.HSVToRGB(currentValues[0], currentValues[1], 1);
+                particles[i].startColor = getColorForEmbedding(s);
             }
             else if (embeddings[s].Length == 3)
             {
                 particles[i].position = new Vector3(currentValues[0], currentValues[1], currentValues[2]);
-                particles[i].startColor = new Color(currentValues[0], currentValues[1], currentValues[2]);
+                particles[i].startColor = getColorForEmbedding(s);
             }
             particles[i].rotation3D = Vector3.zero;
             particles[i].startSize = size;

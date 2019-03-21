@@ -39,4 +39,10 @@ public static class DataImporter
         }
         return data;
     }
+    public static Dictionary<string, string[]> LoadEmbeddingColors(TextAsset t)
+    {
+        Dictionary<string, string[]> colors =
+          JsonConvert.DeserializeObject<Dictionary<string, string[]>>(t.text.Substring(1, t.text.Length - 2));
+        return colors;
+    }
 }

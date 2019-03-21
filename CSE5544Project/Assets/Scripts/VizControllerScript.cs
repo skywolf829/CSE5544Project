@@ -11,6 +11,7 @@ public class VizControllerScript : MonoBehaviour
     public float moveSpeed = 1;
 
     public TextAsset wordEmbeddings, KGEmbeddings, corpus;
+    public TextAsset embeddingColors;
     public GameObject TMProPrefab;
 
     KnowledgeGraphEmbeddingsVisualizer kgvis;
@@ -56,6 +57,9 @@ public class VizControllerScript : MonoBehaviour
             StartCoroutine(wordvis.SetData(wordEmbeddings));
             StartCoroutine(kgvis.SetData(KGEmbeddings));
             StartCoroutine(parservis.SetData(corpus));
+
+            StartCoroutine(wordvis.SetColorData(embeddingColors));
+            StartCoroutine(kgvis.SetColorData(embeddingColors));
 
             StartCoroutine(wordvis.UpdateVisualization(null, false, 100));
             StartCoroutine(kgvis.UpdateVisualization(null, false, 100));
