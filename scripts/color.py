@@ -7,12 +7,14 @@ import math
 with open('../embeddings/ent.pkl','rb') as f:
  x = pkl.load(f)
 
-with open('../data/topics.pkl','rb') as f:
+with open('../data/words.pkl','rb') as f:
  dic = pkl.load(f)
 
 words = list(dic.keys())
 
 colors = {0:'#CC0000',1:'#CC6600',2:'#CCCC00',3:'#66CC00',4:'#00CCCC',5:'#0066CC',6:'#CC00CC',7:'#CC0066',8:'#606060',9:'#666600',10:'#FFE5CC',11:'#990000'}
+
+# red, orange, lgreen, dgreen, lblue, dblue, magenta, pink, grey 
 
 n_dic = dict()
 
@@ -29,5 +31,3 @@ for i in list(x.keys()):
 
 with open('ent_col.pkl','wb') as f:
  pkl.dump(n_dic,f)
-#print(cosine(dic[words[0]],dic[words[0]]))
-#print(euclidean(dic[words[0]],dic[words[0]]))
