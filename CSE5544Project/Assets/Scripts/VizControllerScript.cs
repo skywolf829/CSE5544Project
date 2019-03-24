@@ -10,9 +10,18 @@ public class VizControllerScript : MonoBehaviour
     public static VizControllerScript instance;
     public float moveSpeed = 1;
 
-    public TextAsset wordEmbeddings, KGEmbeddings, corpus;
+    public TextAsset wordEmbeddings, KGEmbeddings, corpus, topics;
     public TextAsset embeddingColors;
     public GameObject TMProPrefab;
+
+    [HideInInspector]
+    public List<string[]> entries;
+    [HideInInspector]
+    public List<string> topicsList;
+    [HideInInspector]
+    public List<Color> colorsList;
+    [HideInInspector]
+    public Dictionary<string, Color> embeddingColorsDict;
 
     KnowledgeGraphEmbeddingsVisualizer kgvis;
     WordEmbeddingsVisualizer wordvis;
@@ -21,7 +30,12 @@ public class VizControllerScript : MonoBehaviour
     bool holdingTrigger;
     GameObject selectionBubble;
 
-    List<string> currentFilters;
+    [HideInInspector]
+    public List<string> currentFilters;
+    [HideInInspector]
+    public List<string> predicatesSelected;
+    [HideInInspector]
+    public List<Color> SOPColoring;
 
     VRTK_ControllerReference controllerRef;
     
@@ -45,26 +59,36 @@ public class VizControllerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        predicatesSelected = new List<string>();
+
         kgvis = KnowledgeGraphEmbeddingsVisualizer.instance;
         wordvis = WordEmbeddingsVisualizer.instance;
         parservis = ParserVisualization.instance;
 
-        if(!kgvis || !wordvis || !parservis)
+
+        entries = DataImporter.LoadParserData(corpus);
+        colorsList = DataImporter.LoadColors(embeddingColors);
+        topicsList = DataImporter.LoadTopics(topics);
+        embeddingColorsDict = DataImporter.LoadEmbeddingColors(embeddingColors);
+
+        if (!kgvis || !wordvis || !parservis)
         {
             print("Missing a visualization instance!");
             gameObject.SetActive(false);
         }
         else if(wordEmbeddings != null && KGEmbeddings != null && corpus != null)
         {
-            StartCoroutine(wordvis.SetData(wordEmbeddings));
-            StartCoroutine(kgvis.SetData(KGEmbeddings));
-            StartCoroutine(parservis.SetData(corpus));
+            wordvis.embeddings = DataImporter.LoadWord2VecEmbeddings(wordEmbeddings);
+            kgvis.embeddings = DataImporter.LoadKGEmbeddings(KGEmbeddings);
 
-            StartCoroutine(wordvis.SetColorData(embeddingColors));
-            StartCoroutine(kgvis.SetColorData(embeddingColors));
+            wordvis.PreProcessData();
+            kgvis.PreProcessData();
+            parservis.PreProcessData();
 
             StartCoroutine(wordvis.UpdateVisualization(null, false, 100));
             StartCoroutine(kgvis.UpdateVisualization(null, false, 100));
+            StartCoroutine(parservis.CreateUI());
+
             StartCoroutine(VisibleTextFromHandPositions());
         }
         else
@@ -133,6 +157,8 @@ public class VizControllerScript : MonoBehaviour
             if(rchs[i].collider.transform.tag == "Predicate")
             {
                 string filterTerm = rchs[i].collider.GetComponent<TextMeshProUGUI>().text;
+                predicatesSelected = new List<string>();
+                predicatesSelected.Add(filterTerm);
                 currentFilters = parservis.CreateFilterFromPredicate(filterTerm);
                 print(currentFilters.Count);
                 StartCoroutine(wordvis.UpdateVisualization(currentFilters, false, 100));
@@ -143,6 +169,7 @@ public class VizControllerScript : MonoBehaviour
     public void ButtonOnePressed(object o, ControllerInteractionEventArgs e)
     {
         currentFilters = null;
+        predicatesSelected = null;
         visScaled = false;
         StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
         StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));

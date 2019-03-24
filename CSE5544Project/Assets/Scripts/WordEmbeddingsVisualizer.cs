@@ -10,16 +10,21 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
     public Material boundsMaterial;
     public Material particleMaterialMobile;
     public static WordEmbeddingsVisualizer instance;
+    public ParticleSystem WordEmbeddingsParticleSystem;
+    public ParticleSystem connectionsParticleSystem;
+    public bool showConnections = false;
 
-    Dictionary<string, float[]> embeddings;
-    Dictionary<string, string[]> embeddingColors;
+    [HideInInspector]
+    public Dictionary<string, float[]> embeddings;
+    
     Dictionary<ParticleSystem.Particle, string> particleToKey;
     Dictionary<string, ParticleSystem.Particle> keyToParticle;
     bool loadedData = false;
     bool colorsLoaded = false;
     float[] minValues, maxValues, differences;
     ParticleSystem.Particle[] particles;
-    List<string> filters;
+    List<ParticleSystem.Particle> connectionParticles;
+
     private void Awake()
     {
         if (instance == null)
@@ -63,20 +68,6 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             }
         }
         return f;
-    }
-    public IEnumerator SetData(TextAsset t)
-    {
-        yield return embeddings = DataImporter.LoadWord2VecEmbeddings(t);
-        PreProcessData();
-        CreateBounds();
-        loadedData = true;
-        print("Embeddings count " + embeddings.Count);
-    }
-    public IEnumerator SetColorData(TextAsset t)
-    {
-        yield return embeddingColors = DataImporter.LoadEmbeddingColors(t);
-        colorsLoaded = true;
-        print("Color count " + embeddingColors.Count);
     }
     private void CreateBounds()
     {
@@ -201,7 +192,7 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
         g.transform.SetParent(transform, false);
     }
-    private void PreProcessData()
+    public void PreProcessData()
     {
         foreach (KeyValuePair<string, float[]> pair in embeddings)
         {
@@ -223,14 +214,18 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         for(int i = 0; i < minValues.Length; i++)
         {
             differences[i] = maxValues[i] - minValues[i];
-        }        
+        }
+
+        CreateBounds();
+        loadedData = true;
+        colorsLoaded = true;
     }
     private Color getColorForEmbedding(string s)
     {
         
         Color c = Color.black;
-        if(embeddingColors.ContainsKey(s))
-            ColorUtility.TryParseHtmlString(embeddingColors[s][0], out c);
+        if (VizControllerScript.instance.embeddingColorsDict.ContainsKey(s))
+            c = VizControllerScript.instance.embeddingColorsDict[s];
         else
         {
             //print("Colors dict missing " + s);
@@ -241,8 +236,9 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
     {
         while (!loadedData || !colorsLoaded) yield return null;
 
-        ParticleSystem.MainModule mainModule = GetComponent<ParticleSystem>().main;
-        if(filters == null || filters.Count == 0)
+        ParticleSystem.MainModule mainModule = WordEmbeddingsParticleSystem.main;
+        ParticleSystem.MainModule connectionsMainModule = connectionsParticleSystem.main;
+        if (filters == null || filters.Count == 0)
         {
             filters = new List<string>();
             foreach(string s in embeddings.Keys)
@@ -250,9 +246,9 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
                 filters.Add(s);
             }
         }
-        this.filters = filters;
         mainModule.maxParticles = filters.Count;
         particles = new ParticleSystem.Particle[filters.Count];
+        connectionParticles = new List<ParticleSystem.Particle>();
         int i = 0;
         particleToKey = new Dictionary<ParticleSystem.Particle, string>();
         keyToParticle = new Dictionary<string, ParticleSystem.Particle>();
@@ -308,11 +304,43 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             i++;
             if (numPerUpdate != 0 && i % numPerUpdate == 0)
             {
-                GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
+                WordEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
                 yield return null;
             }
-        }        
-        GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
+        }
+        WordEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
+
+        if (showConnections)
+        {
+            GameObject empty = new GameObject();
+
+            for (i = 0; i < VizControllerScript.instance.entries.Count; i++)
+            {
+                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2]))
+                {
+                    Vector3 pos1 = keyToParticle[VizControllerScript.instance.entries[i][0]].position;
+                    Vector3 pos2 = keyToParticle[VizControllerScript.instance.entries[i][1]].position;
+
+                    ParticleSystem.Particle p = new ParticleSystem.Particle();
+                    p.position = (pos1 + pos2) / 2f;
+                    empty.transform.position = (pos1 + transform.position + pos2 + transform.position) / 2f;
+                    empty.transform.LookAt(pos2 + transform.position);
+                    p.rotation3D = empty.transform.eulerAngles;
+                    p.startSize3D = new Vector3(size / 10f, size / 10f, Vector3.Distance(pos1, pos2));
+                    p.startColor = Color.gray;
+                    connectionParticles.Add(p);
+                }
+                if (numPerUpdate != 0 && connectionParticles.Count % numPerUpdate == 0)
+                {
+                    connectionsMainModule.maxParticles = connectionParticles.Count;
+                    connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+                    yield return null;
+                }
+            }
+            Destroy(empty);
+            connectionsMainModule.maxParticles = connectionParticles.Count;
+            connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+        }
         yield return null;
     }
 }
