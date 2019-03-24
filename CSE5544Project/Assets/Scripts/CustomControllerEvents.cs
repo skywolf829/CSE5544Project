@@ -18,6 +18,8 @@ public class CustomControllerEvents : MonoBehaviour
             new ControllerInteractionEventHandler(VizControllerScript.instance.GripPressed);
         GetComponent<VRTK_ControllerEvents>().GripReleased +=
             new ControllerInteractionEventHandler(VizControllerScript.instance.GripReleased);
+        GetComponent<VRTK_ControllerEvents>().TriggerPressed +=
+            new ControllerInteractionEventHandler(VizControllerScript.instance.TriggerPressed);
         GetComponent<VRTK_ControllerEvents>().TriggerReleased +=
             new ControllerInteractionEventHandler(VizControllerScript.instance.TriggerReleased);
         GetComponent<VRTK_ControllerEvents>().ButtonOnePressed +=

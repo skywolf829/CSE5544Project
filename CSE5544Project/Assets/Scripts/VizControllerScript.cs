@@ -29,6 +29,8 @@ public class VizControllerScript : MonoBehaviour
 
     bool visScaled = false;
 
+    Vector3 startTriggerPos, startTriggerRot;
+
     private void Awake()
     {
         if(instance == null)
@@ -115,8 +117,16 @@ public class VizControllerScript : MonoBehaviour
         Destroy(selectionBubble);
         selectionBubble = null;
     }
+    public void TriggerPressed(object o, ControllerInteractionEventArgs e)
+    {
+        startTriggerPos = e.controllerReference.actual.transform.position;
+        startTriggerRot = e.controllerReference.actual.transform.eulerAngles;
+    }
     public void TriggerReleased(object o, ControllerInteractionEventArgs e)
     {
+        if (Vector3.Distance(startTriggerPos, e.controllerReference.actual.transform.position) > 0.05f ||
+            Vector3.Angle(startTriggerRot, e.controllerReference.actual.transform.eulerAngles) > 5f)
+            return;
         RaycastHit[] rchs = Physics.RaycastAll(new Ray(e.controllerReference.actual.transform.position, e.controllerReference.actual.transform.forward), Mathf.Infinity);
         for(int i = 0; i < rchs.Length; i++)
         {
