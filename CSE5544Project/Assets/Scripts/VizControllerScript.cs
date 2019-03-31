@@ -5,6 +5,24 @@ using VRTK;
 using TMPro;
 using UnityEngine.EventSystems;
 
+// Screenshots of particular data
+// 2D(Python and Unity) vs 3D visualization
+    // Currency example
+    // Find other examples
+// Selecting specific data
+// Show HUB with glyphs
+// Add selection + connectivity for KG 
+// Adding scaling/repositioning to the boxes
+// Add controls UI
+// Add button to switch coloring scheme
+// Loading bar UI
+// Optimization
+// Legend for Subject and Object in KG (Colors)
+// Show some statistics
+    // Max connectivity
+    // Num visualized words
+// Add bounding box (room)
+
 public class VizControllerScript : MonoBehaviour
 {
     
