@@ -4,6 +4,7 @@ using UnityEngine;
 using VRTK;
 public class CustomControllerEvents : MonoBehaviour
 {
+    
     VRTK_ControllerReference controllerRef;
 
     GameObject selectionBubble;
@@ -24,10 +25,13 @@ public class CustomControllerEvents : MonoBehaviour
             new ControllerInteractionEventHandler(VizControllerScript.instance.TriggerReleased);
         GetComponent<VRTK_ControllerEvents>().ButtonOnePressed +=
             new ControllerInteractionEventHandler(VizControllerScript.instance.ButtonOnePressed);
+        GetComponent<VRTK_ControllerEvents>().TouchpadPressed +=
+            new ControllerInteractionEventHandler(VizControllerScript.instance.ButtonOnePressed);
         GetComponent<VRTK_ControllerEvents>().TouchpadAxisChanged +=
             new ControllerInteractionEventHandler(VizControllerScript.instance.TouchpadInput);
         GetComponent<VRTK_ControllerEvents>().ButtonTwoPressed +=
             new ControllerInteractionEventHandler(VizControllerScript.instance.ButtonTwoPressed);
 
     }
+    
 }

@@ -661,7 +661,6 @@ namespace VRTK
         #region event trigger methods
         public virtual void OnTriggerPressed(ControllerInteractionEventArgs e)
         {
-            print("trigger pressed - VRTK");
             if (TriggerPressed != null)
             {
                 TriggerPressed(this, e);

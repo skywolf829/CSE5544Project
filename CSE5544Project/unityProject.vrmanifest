@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.cse5544project.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\Skylar\\Documents\\CSE5544Project\\CSE5544Project\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "CSE5544Project [Testing]"
+        }
+      }
+    }
+  ]
+}

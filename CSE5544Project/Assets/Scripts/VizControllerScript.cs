@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 public class VizControllerScript : MonoBehaviour
 {
+    
     public static VizControllerScript instance;
     public float moveSpeed = 1;
 
@@ -44,7 +45,7 @@ public class VizControllerScript : MonoBehaviour
     bool visScaled = false;
 
     Vector3 startTriggerPos, startTriggerRot;
-
+    
     private void Awake()
     {
         if(instance == null)
@@ -168,8 +169,8 @@ public class VizControllerScript : MonoBehaviour
     }
     public void ButtonOnePressed(object o, ControllerInteractionEventArgs e)
     {
-        currentFilters = null;
-        predicatesSelected = null;
+        currentFilters = new List<string>();
+        predicatesSelected = new List<string>();
         visScaled = false;
         StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
         StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
@@ -190,8 +191,8 @@ public class VizControllerScript : MonoBehaviour
 
     public void TouchpadInput(object sender, ControllerInteractionEventArgs e)
     {
-        if (!Camera.main.gameObject) return;
-        Transform playerCam = Camera.main.transform;
+        if (!Camera.allCameras[0].gameObject) return;
+        Transform playerCam = Camera.allCameras[0].transform;
         Vector3 forwardOnPlane = playerCam.forward - Vector3.Dot(playerCam.forward, Vector3.up) * Vector3.up;
         Vector3 rightOnPlane = playerCam.right - Vector3.Dot(playerCam.right, Vector3.up) * Vector3.up;
         GameObject.FindWithTag("Player").transform.Translate(
@@ -258,7 +259,7 @@ public class VizControllerScript : MonoBehaviour
                     }
                     else
                     {
-                        pair.Value.transform.LookAt(Camera.main.transform.position + Camera.main.transform.forward * 1000);
+                        pair.Value.transform.LookAt(Camera.allCameras[0].transform.position + Camera.allCameras[0].transform.forward * 1000);
                     }
                 }
                 foreach (string s in itemsToDestroy)
@@ -272,7 +273,7 @@ public class VizControllerScript : MonoBehaviour
                     {
                         GameObject g = Instantiate(TMProPrefab);
                         g.transform.position = pair.Value;
-                        g.transform.LookAt(Camera.main.transform.position + Camera.main.transform.forward * 1000);
+                        g.transform.LookAt(Camera.allCameras[0].transform.position + Camera.allCameras[0].transform.forward * 1000);
                         g.GetComponent<TextMeshPro>().text = pair.Key;
                         g.name = pair.Key;
                         g.transform.localScale = Vector3.one * 0.02f;
@@ -300,7 +301,7 @@ public class VizControllerScript : MonoBehaviour
                     }
                     else
                     {
-                        pair.Value.transform.LookAt(Camera.main.transform.position + Camera.main.transform.forward * 1000);
+                        pair.Value.transform.LookAt(Camera.allCameras[0].transform.position + Camera.allCameras[0].transform.forward * 1000);
                     }
                 }
                 foreach (string s in itemsToDestroy)
@@ -314,7 +315,7 @@ public class VizControllerScript : MonoBehaviour
                     {
                         GameObject g = Instantiate(TMProPrefab);
                         g.transform.position = pair.Value;
-                        g.transform.LookAt(Camera.main.transform.position + Camera.main.transform.forward * 1000);
+                        g.transform.LookAt(Camera.allCameras[0].transform.position + Camera.allCameras[0].transform.forward * 1000);
                         g.GetComponent<TextMeshPro>().text = pair.Key;
                         g.name = pair.Key;
                         g.transform.localScale = Vector3.one * 0.02f;
@@ -334,4 +335,5 @@ public class VizControllerScript : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+    
 }
