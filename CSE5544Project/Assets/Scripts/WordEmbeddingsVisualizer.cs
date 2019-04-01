@@ -53,21 +53,28 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
         }
         return f;
     }
-    public List<string> GetFilterSelection(Vector3 pos, float dist)
+    public IEnumerator GetFilterSelection(Vector3 pos, float dist, int steps = 250)
     {
-        if (particleToKey == null)
-        {
-            return new List<string>();
-        }
-        List<string> f = new List<string>();
-        foreach(KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
-        {
-            if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+        if (particleToKey != null) { 
+            List<string> f = new List<string>();
+            int i = 0;
+            foreach (KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
             {
-                if(!f.Contains(pair.Value)) f.Add(pair.Value);
+                if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+                {
+                    if (!f.Contains(pair.Value)) f.Add(pair.Value);
+                }
+                if (i % steps == 0)
+                {
+                    LoadingManager.instance.SetProgress("GetFilterSelectionWE", (float)i / particleToKey.Count, "Determining filter selection");
+                    yield return null;
+                }
+                i++;
             }
+            LoadingManager.instance.FinishedLoading("GetFilterSelectionWE");
+            VizControllerScript.instance.UpdateFilters(f);
         }
-        return f;
+        yield return null;
     }
     private void CreateBounds()
     {
@@ -236,20 +243,31 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
     {
         while (!loadedData || !colorsLoaded) yield return null;
 
+        LoadingManager.instance.SetProgress("UpdateVisualizationWE", 0.01f, "Updating WE Visualization");
         ParticleSystem.MainModule mainModule = WordEmbeddingsParticleSystem.main;
         ParticleSystem.MainModule connectionsMainModule = connectionsParticleSystem.main;
+
+
+        int i = 0;
         if (filters == null || filters.Count == 0)
         {
             filters = new List<string>();
             foreach(string s in embeddings.Keys)
             {
                 filters.Add(s);
+                if(numPerUpdate != 0 && i % numPerUpdate == 0)
+                {
+                    LoadingManager.instance.SetProgress("UpdateVisualizationWE", 0.2f * (float)i / embeddings.Count, "Updating WE Visualization");
+                    yield return null;
+                }
+                i++;
             }
         }
+
+        i = 0;
         mainModule.maxParticles = filters.Count;
         particles = new ParticleSystem.Particle[filters.Count];
         connectionParticles = new List<ParticleSystem.Particle>();
-        int i = 0;
         particleToKey = new Dictionary<ParticleSystem.Particle, string>();
         keyToParticle = new Dictionary<string, ParticleSystem.Particle>();
         
@@ -272,8 +290,8 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             tempMin = minValues;
             tempMax = maxValues;
         }
+
         i = 0;
-        
         foreach (string s in filters)
         {            
             particles[i] = new ParticleSystem.Particle();
@@ -298,17 +316,20 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
             particles[i].randomSeed = (uint)s.GetHashCode();
             particles[i].axisOfRotation = new Vector3(Random.value, Random.value, Random.value);
             particleToKey.Add(particles[i], s);
-            keyToParticle.Add(s, particles[i]);
+            if(!keyToParticle.ContainsKey(s)) keyToParticle.Add(s, particles[i]);
             
             
             i++;
             if (numPerUpdate != 0 && i % numPerUpdate == 0)
             {
                 WordEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
+                LoadingManager.instance.SetProgress("UpdateVisualizationWE", 0.2f + 0.8f * (float)i / filters.Count, "Updating WE Visualization");
                 yield return null;
             }
         }
         WordEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
+        LoadingManager.instance.FinishedLoading("UpdateVisualizationWE");
+        yield return null;
 
         if (showConnections)
         {
@@ -316,7 +337,9 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
 
             for (i = 0; i < VizControllerScript.instance.entries.Count; i++)
             {
-                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2]))
+                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2])
+                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][0])
+                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][1]))
                 {
                     Vector3 pos1 = keyToParticle[VizControllerScript.instance.entries[i][0]].position;
                     Vector3 pos2 = keyToParticle[VizControllerScript.instance.entries[i][1]].position;
@@ -330,16 +353,18 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
                     p.startColor = Color.gray;
                     connectionParticles.Add(p);
                 }
-                if (numPerUpdate != 0 && connectionParticles.Count % numPerUpdate == 0)
+                if (numPerUpdate != 0 && i % (numPerUpdate * 100) == 0)
                 {
                     connectionsMainModule.maxParticles = connectionParticles.Count;
                     connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+                    LoadingManager.instance.SetProgress("UpdateVisualizationWEConnections", (float)i / VizControllerScript.instance.entries.Count, "Updating WE Visualization Connections");
                     yield return null;
                 }
             }
             Destroy(empty);
             connectionsMainModule.maxParticles = connectionParticles.Count;
             connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+            LoadingManager.instance.FinishedLoading("UpdateVisualizationWEConnections");
         }
         yield return null;
     }

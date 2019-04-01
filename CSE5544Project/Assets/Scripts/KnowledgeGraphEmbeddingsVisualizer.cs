@@ -53,21 +53,29 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         }
         return f;
     }
-    public List<string> GetFilterSelection(Vector3 pos, float dist)
+    public IEnumerator GetFilterSelection(Vector3 pos, float dist, int steps = 250)
     {
-        if (particleToKey == null)
+        if (particleToKey != null)
         {
-            return new List<string>();
-        }
-        List<string> f = new List<string>();
-        foreach (KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
-        {
-            if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+            List<string> f = new List<string>();
+            int i = 0;
+            foreach (KeyValuePair<ParticleSystem.Particle, string> pair in particleToKey)
             {
-                if(!f.Contains(pair.Value)) f.Add(pair.Value);
+                if (Vector3.Distance(pos, pair.Key.position + transform.position) < dist)
+                {
+                    if (!f.Contains(pair.Value)) f.Add(pair.Value);
+                }
+                if (i % steps == 0)
+                {
+                    LoadingManager.instance.SetProgress("GetFilterSelectionKG", (float)i / particleToKey.Count, "Determining filter selection");
+                    yield return null;
+                }
+                i++;
             }
+            LoadingManager.instance.FinishedLoading("GetFilterSelectionKG");
+            VizControllerScript.instance.UpdateFilters(f);
         }
-        return f;
+        yield return null;
     }
     private void CreateBounds()
     {
@@ -235,22 +243,30 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
     {
         while (!loadedData || !colorsLoaded) yield return null;
 
-
+        LoadingManager.instance.SetProgress("UpdateVisualizationKG", 0.01f, "Updating KG Visualization");
         ParticleSystem.MainModule mainModule = KnowledgeGraphEmbeddingsParticleSystem.main;
         ParticleSystem.MainModule connectionsMainModule = connectionsParticleSystem.main;
 
+        int i = 0;
         if (filters == null || filters.Count == 0)
         {
             filters = new List<string>();
             foreach (string s in embeddings.Keys)
             {
                 filters.Add(s);
+                if (numPerUpdate != 0 && i % numPerUpdate == 0)
+                {
+                    LoadingManager.instance.SetProgress("UpdateVisualizationKG", 0.2f * (float)i / embeddings.Count, "Updating KG Visualization");
+                    yield return null;
+                }
+                i++;
             }
         }
+
+        i = 0;
         mainModule.maxParticles = filters.Count;
         particles = new ParticleSystem.Particle[filters.Count];
         connectionParticles = new List<ParticleSystem.Particle>();
-        int i = 0;
         particleToKey = new Dictionary<ParticleSystem.Particle, string>();
         keyToParticle = new Dictionary<string, ParticleSystem.Particle>();
 
@@ -302,22 +318,28 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             particles[i].axisOfRotation = new Vector3(Random.value, Random.value, Random.value);
 
             particleToKey.Add(particles[i], filters[i]);
-            keyToParticle.Add(filters[i], particles[i]);            
+            if(!keyToParticle.ContainsKey(filters[i])) keyToParticle.Add(filters[i], particles[i]);            
             
             if (numPerUpdate != 0 && i % numPerUpdate == 0)
             {
                 KnowledgeGraphEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
+                LoadingManager.instance.SetProgress("UpdateVisualizationKG", 0.2f + 0.8f * (float)i / filters.Count, "Updating KG Visualization");
                 yield return null;
             }
         }
         KnowledgeGraphEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
+        LoadingManager.instance.FinishedLoading("UpdateVisualizationKG");
+        yield return null;
+        
         if (showConnections)
         {
             GameObject empty = new GameObject();
 
             for (i = 0; i < VizControllerScript.instance.entries.Count; i++)
             {
-                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2]))
+                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2])
+                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][0])
+                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][1]))
                 {
                     Vector3 pos1 = keyToParticle[VizControllerScript.instance.entries[i][0]].position;
                     Vector3 pos2 = keyToParticle[VizControllerScript.instance.entries[i][1]].position;
@@ -331,16 +353,18 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
                     p.startColor = Color.gray;
                     connectionParticles.Add(p);
                 }
-                if (numPerUpdate != 0 && connectionParticles.Count % numPerUpdate == 0)
+                if (numPerUpdate != 0 && i % (numPerUpdate * 100) == 0)
                 {
                     connectionsMainModule.maxParticles = connectionParticles.Count;
                     connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+                    LoadingManager.instance.SetProgress("UpdateVisualizationKGConnections", (float)i / VizControllerScript.instance.entries.Count, "Updating KG Visualization Connections");
                     yield return null;
                 }
             }
             Destroy(empty);
             connectionsMainModule.maxParticles = connectionParticles.Count;
             connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+            LoadingManager.instance.FinishedLoading("UpdateVisualizationKGConnections");
         }
         yield return null;
     }

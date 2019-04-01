@@ -44,11 +44,12 @@ public class ParserVisualization : MonoBehaviour
         loadedColors = true;
         loadedTopics = true;
     }
-    public List<string> CreateFilterFromPredicate(string s)
+    public IEnumerator CreateFilterFromPredicate(string s, int steps = 10000)
     {
         List<string> filters = new List<string>();
         List<Color> colors = new List<Color>();
 
+        int i = 0;
         foreach (string[] entry in VizControllerScript.instance.entries)
         {
             if(entry[2] == s)
@@ -64,17 +65,27 @@ public class ParserVisualization : MonoBehaviour
                     colors.Add(Color.red);
                 }
             }
+            if (steps != 0 && i % steps == 0)
+            {
+                LoadingManager.instance.SetProgress("CreateFilterFromPredicate_"+s, 
+                    (float)i / VizControllerScript.instance.entries.Count, "Determining filters based on " + s);
+                yield return null;
+            }
+            i++;
         }
         VizControllerScript.instance.SOPColoring = colors;
-        return filters;
+        VizControllerScript.instance.UpdateFilters(filters);
+        LoadingManager.instance.FinishedLoading("CreateFilterFromPredicate_" + s);
+        yield return null;
     }
-    public List<string> CreateFilterFromPredicate(int i)
+    public IEnumerator CreateFilterFromPredicate(int spot, int steps = 10000)
     {
+        int i = 0;
         List<string> filters = new List<string>();
         List<Color> colors = new List<Color>();
         foreach (string[] entry in VizControllerScript.instance.entries)
         {
-            if (entry[2] == VizControllerScript.instance.entries[i][2])
+            if (entry[2] == VizControllerScript.instance.entries[spot][2])
             {
                 if (!filters.Contains(entry[0]))
                 {
@@ -87,9 +98,18 @@ public class ParserVisualization : MonoBehaviour
                     colors.Add(Color.red);
                 }
             }
+            if (steps != 0 && i % steps == 0)
+            {
+                LoadingManager.instance.SetProgress("CreateFilterFromPredicate_"+i,
+                    (float)i / VizControllerScript.instance.entries.Count, "Determining filters based on index" + i);
+                yield return null;
+            }
+            i++;
         }
-        VizControllerScript.instance.SOPColoring= colors;
-        return filters;
+        VizControllerScript.instance.SOPColoring = colors;
+        VizControllerScript.instance.UpdateFilters(filters);
+        LoadingManager.instance.FinishedLoading("CreateFilterFromPredicate_" + i);
+        yield return null;
     }
     public IEnumerator CreateUI()
     {

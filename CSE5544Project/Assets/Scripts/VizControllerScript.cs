@@ -28,7 +28,7 @@ public class VizControllerScript : MonoBehaviour
     
     public static VizControllerScript instance;
     public float moveSpeed = 1;
-
+   
     public TextAsset wordEmbeddings, KGEmbeddings, corpus, topics;
     public TextAsset embeddingColors;
     public GameObject TMProPrefab;
@@ -63,7 +63,11 @@ public class VizControllerScript : MonoBehaviour
     bool visScaled = false;
 
     Vector3 startTriggerPos, startTriggerRot;
-    
+
+    Vector2 touchpadDirection = Vector2.zero;
+
+    GameObject SelectedPredicate = null;
+
     private void Awake()
     {
         if(instance == null)
@@ -123,7 +127,7 @@ public class VizControllerScript : MonoBehaviour
             return;
 
         controllerRef = e.controllerReference;
-        print(e.controllerReference);
+        //print(e.controllerReference);
         selectionBubble = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         selectionBubble.transform.position = e.controllerReference.actual.transform.position;
         selectionBubble.transform.localScale = Vector3.one * 0.01f;
@@ -139,23 +143,17 @@ public class VizControllerScript : MonoBehaviour
         controllerRef = null;
         if (WordEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(selectionBubble.transform.position))
         {
-            currentFilters = wordvis.GetFilterSelection(selectionBubble.transform.position, selectionBubble.transform.localScale.x / 2f);
-            if (currentFilters != null)
-            {
-                visScaled = false;
-                StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
-                StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
-            }
+            predicatesSelected = new List<string>();
+            if (SelectedPredicate) SelectedPredicate.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.clear;
+            SelectedPredicate = null;
+            StartCoroutine(wordvis.GetFilterSelection(selectionBubble.transform.position, selectionBubble.transform.localScale.x / 2f));           
         }
         else if (KnowledgeGraphEmbeddingsVisualizer.instance.gameObject.GetComponent<BoxCollider>().bounds.Contains(selectionBubble.transform.position))
         {
-            currentFilters = KnowledgeGraphEmbeddingsVisualizer.instance.GetFilterSelection(selectionBubble.transform.position, selectionBubble.transform.localScale.x / 2f);
-            if (currentFilters != null)
-            {
-                visScaled = false;
-                StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
-                StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
-            }
+            predicatesSelected = new List<string>();
+            if (SelectedPredicate) SelectedPredicate.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.clear;
+            SelectedPredicate = null;
+            StartCoroutine(kgvis.GetFilterSelection(selectionBubble.transform.position, selectionBubble.transform.localScale.x / 2f));
         }        
         Destroy(selectionBubble);
         selectionBubble = null;
@@ -167,9 +165,9 @@ public class VizControllerScript : MonoBehaviour
     }
     public void TriggerReleased(object o, ControllerInteractionEventArgs e)
     {
-        if (Vector3.Distance(startTriggerPos, e.controllerReference.actual.transform.position) > 0.05f ||
-            Vector3.Angle(startTriggerRot, e.controllerReference.actual.transform.eulerAngles) > 5f)
-            return;
+       // if (Vector3.Distance(startTriggerPos, e.controllerReference.actual.transform.position) > 0.05f ||
+       //     Vector3.Angle(startTriggerRot, e.controllerReference.actual.transform.eulerAngles) > 5f)
+       //     return;
         RaycastHit[] rchs = Physics.RaycastAll(new Ray(e.controllerReference.actual.transform.position, e.controllerReference.actual.transform.forward), Mathf.Infinity);
         for(int i = 0; i < rchs.Length; i++)
         {
@@ -178,10 +176,13 @@ public class VizControllerScript : MonoBehaviour
                 string filterTerm = rchs[i].collider.GetComponent<TextMeshProUGUI>().text;
                 predicatesSelected = new List<string>();
                 predicatesSelected.Add(filterTerm);
-                currentFilters = parservis.CreateFilterFromPredicate(filterTerm);
-                print(currentFilters.Count);
-                StartCoroutine(wordvis.UpdateVisualization(currentFilters, false, 100));
-                StartCoroutine(kgvis.UpdateVisualization(currentFilters, false, 100));
+                StartCoroutine(parservis.CreateFilterFromPredicate(filterTerm));
+                if (SelectedPredicate)
+                {
+                    SelectedPredicate.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.clear;
+                }
+                SelectedPredicate = rchs[i].collider.gameObject;
+                SelectedPredicate.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.green;
             }
         }
     }
@@ -189,6 +190,8 @@ public class VizControllerScript : MonoBehaviour
     {
         currentFilters = new List<string>();
         predicatesSelected = new List<string>();
+        if (SelectedPredicate) SelectedPredicate.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.clear;
+        SelectedPredicate = null;
         visScaled = false;
         StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
         StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
@@ -205,19 +208,35 @@ public class VizControllerScript : MonoBehaviour
         {
             selectionBubble.transform.localScale = Vector3.one * Vector3.Distance(controllerRef.actual.transform.position, selectionBubble.transform.position);
         }
-    }
-
-    public void TouchpadInput(object sender, ControllerInteractionEventArgs e)
-    {
         if (!Camera.allCameras[0].gameObject) return;
+        if (touchpadDirection == Vector2.zero) return;
         Transform playerCam = Camera.allCameras[0].transform;
         Vector3 forwardOnPlane = playerCam.forward - Vector3.Dot(playerCam.forward, Vector3.up) * Vector3.up;
         Vector3 rightOnPlane = playerCam.right - Vector3.Dot(playerCam.right, Vector3.up) * Vector3.up;
         GameObject.FindWithTag("Player").transform.Translate(
-            (forwardOnPlane.normalized * e.touchpadAxis.y + 
-            rightOnPlane.normalized * e.touchpadAxis.x)
-            .normalized 
-            * moveSpeed * e.touchpadAxis.magnitude * Time.deltaTime, Space.World);
+            (forwardOnPlane.normalized * touchpadDirection.y +
+            rightOnPlane.normalized * touchpadDirection.x)
+            .normalized
+            * moveSpeed * touchpadDirection.magnitude * Time.deltaTime, Space.World);
+        
+    }
+    public void UpdateFilters(List<string> newFilters)
+    {
+        currentFilters = newFilters;
+        if(currentFilters != null)
+        {
+            visScaled = false;
+            StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
+            StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+        }
+    }
+    public void TouchpadInput(object sender, ControllerInteractionEventArgs e)
+    {
+        touchpadDirection = e.touchpadAxis;
+    }
+    public void TouchpadReleased(object sender, ControllerInteractionEventArgs e)
+    {
+        touchpadDirection = Vector2.zero;
     }
     
     IEnumerator VisibleTextFromHandPositions()
