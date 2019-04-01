@@ -143,10 +143,54 @@ public class ParserVisualization : MonoBehaviour
                 -i * t.GetComponent<RectTransform>().rect.height - t.GetComponent<RectTransform>().rect.height / 2f, 0);
 
         }
-
+        StartCoroutine(UpdateUI());
     }
-    public IEnumerator UpdateUI(List<string> filters)
+    public IEnumerator UpdateUI(float timeStep = 0.1f)
     {
-        yield return null;
+        float lastTime = Time.time;
+        Vector3[] BoundingCorners = new Vector3[4];
+        ContentPane.transform.parent.parent.GetComponent<RectTransform>().GetWorldCorners(BoundingCorners);
+
+        Vector3 center = new Vector3();
+        Vector3 size = new Vector3();
+        Vector3 mins = new Vector3();
+        Vector3 maxs = new Vector3();
+        mins = BoundingCorners[0];
+        maxs = BoundingCorners[0];
+        for (int i = 0; i < BoundingCorners.Length; i++)
+        {
+            center += BoundingCorners[i];
+            print(BoundingCorners[i].x + " " + BoundingCorners[i].y + " " + BoundingCorners[i].z);
+            if (mins.x > BoundingCorners[i].x) mins = new Vector3(BoundingCorners[i].x, mins.y, mins.z);
+            else if (maxs.x < BoundingCorners[i].x) maxs = new Vector3(BoundingCorners[i].x, maxs.y, maxs.z);
+            if (mins.y > BoundingCorners[i].y) mins = new Vector3(mins.x, BoundingCorners[i].y, mins.z);
+            else if (maxs.y < BoundingCorners[i].y) maxs = new Vector3(maxs.x, BoundingCorners[i].y, maxs.z);
+            if (mins.z > BoundingCorners[i].z) mins = new Vector3(mins.x, mins.y, BoundingCorners[i].z);
+            else if (maxs.z < BoundingCorners[i].z) maxs = new Vector3(maxs.x, maxs.y, BoundingCorners[i].z);
+        }
+        center /= 4f;
+        size = maxs - mins;
+        Bounds parentBounds = new Bounds(center, size);
+        while (true)
+        {
+            if (Time.time - lastTime > timeStep)
+            {               
+                for (int i = 0; i < predicateObjects.Count; i++)
+                {
+                    Vector3[] corners = new Vector3[4];
+                    predicateObjects[i].GetComponent<RectTransform>().GetWorldCorners(corners);
+                    if (parentBounds.Contains(corners[0]) || parentBounds.Contains(corners[2]))
+                    {
+                        predicateObjects[i].SetActive(true);
+                    }
+                    else
+                    {
+                        predicateObjects[i].SetActive(false);
+                    }
+                }
+                lastTime = Time.time;
+            }
+            yield return null;
+        }
     }
 }

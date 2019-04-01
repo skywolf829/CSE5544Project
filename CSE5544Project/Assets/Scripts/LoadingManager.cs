@@ -28,10 +28,6 @@ public class LoadingManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
         fullSize = loadingBar.transform.GetChild(0).GetComponent<RectTransform>().rect.width;
         startYScale = loadingBar.transform.GetChild(0).GetComponent<RectTransform>().rect.height;
         startPos = loadingBar.transform.GetChild(0).GetComponent<RectTransform>().localPosition;
@@ -41,7 +37,7 @@ public class LoadingManager : MonoBehaviour
 
         loadingBars = new Dictionary<string, GameObject>();
     }
-    
+
     public void SetProgress(string processName, float percent, string info = null)
     {
         if (!loadingBars.ContainsKey(processName))
