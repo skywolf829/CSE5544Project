@@ -303,13 +303,15 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             {
                 particles[i].position = new Vector2(currentValues[0], currentValues[1]);
 
-                if (VizControllerScript.instance.predicatesSelected.Count == 0) particles[i].startColor = getColorForEmbedding(filters[i]);
+                if (VizControllerScript.instance.predicatesSelected.Count == 0 ||
+                    !VizControllerScript.instance.useSOPColoring) particles[i].startColor = getColorForEmbedding(filters[i]);
                 else particles[i].startColor = VizControllerScript.instance.SOPColoring[i];
             }
             else if (embeddings[filters[i]].Length == 3)
             {
                 particles[i].position = new Vector3(currentValues[0], currentValues[1], currentValues[2]);
-                if (VizControllerScript.instance.predicatesSelected.Count == 0) particles[i].startColor = getColorForEmbedding(filters[i]);
+                if (VizControllerScript.instance.predicatesSelected.Count == 0 ||
+                    !VizControllerScript.instance.useSOPColoring) particles[i].startColor = getColorForEmbedding(filters[i]);
                 else particles[i].startColor = VizControllerScript.instance.SOPColoring[i];
             }
             particles[i].rotation3D = Vector3.zero;

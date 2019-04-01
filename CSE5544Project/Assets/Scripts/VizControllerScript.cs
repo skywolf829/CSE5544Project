@@ -13,15 +13,10 @@ using UnityEngine.EventSystems;
 // Show HUB with glyphs
 // Add selection + connectivity for KG 
 // Adding scaling/repositioning to the boxes
-// Add controls UI
-// Add button to switch coloring scheme
-// Loading bar UI
-// Optimization
-// Legend for Subject and Object in KG (Colors)
+
 // Show some statistics
     // Max connectivity
     // Num visualized words
-// Add bounding box (room)
 
 public class VizControllerScript : MonoBehaviour
 {
@@ -67,6 +62,8 @@ public class VizControllerScript : MonoBehaviour
     Vector2 touchpadDirection = Vector2.zero;
 
     GameObject SelectedPredicate = null;
+    [HideInInspector]
+    public bool useSOPColoring = true;
 
     private void Awake()
     {
@@ -239,6 +236,44 @@ public class VizControllerScript : MonoBehaviour
         touchpadDirection = Vector2.zero;
     }
     
+    public void KGColorOnTopic()
+    {
+        useSOPColoring = false;
+        StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+    }
+    public void KGColorOnSubjectObject()
+    {
+        useSOPColoring = true;
+        StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+    }
+
+    public void SelectWithConnections()
+    {
+
+    }
+    public void SelectWithoutConnections()
+    {
+
+    }
+
+    public void ShowWEConnections()
+    {
+
+    }
+    public void HideWEConnections()
+    {
+
+    }
+    public void ShowKGConnections()
+    {
+
+    }
+    public void HideKGConnections()
+    {
+
+    }
+
+
     IEnumerator VisibleTextFromHandPositions()
     {
         Dictionary<string, GameObject> currentWEtext = new Dictionary<string, GameObject>();
