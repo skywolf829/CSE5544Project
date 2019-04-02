@@ -64,6 +64,8 @@ public class VizControllerScript : MonoBehaviour
     GameObject SelectedPredicate = null;
     [HideInInspector]
     public bool useSOPColoring = true;
+    [HideInInspector]
+    public bool selectWithConnections = false;
 
     private void Awake()
     {
@@ -203,9 +205,9 @@ public class VizControllerScript : MonoBehaviour
     {
         if (controllerRef != null)
         {
-            selectionBubble.transform.localScale = Vector3.one * Vector3.Distance(controllerRef.actual.transform.position, selectionBubble.transform.position);
+            selectionBubble.transform.localScale = 2 * Vector3.one * Vector3.Distance(controllerRef.actual.transform.position, selectionBubble.transform.position);
         }
-        if (!Camera.allCameras[0].gameObject) return;
+        if (Camera.allCamerasCount == 0 || !Camera.allCameras[0].gameObject) return;
         if (touchpadDirection == Vector2.zero) return;
         Transform playerCam = Camera.allCameras[0].transform;
         Vector3 forwardOnPlane = playerCam.forward - Vector3.Dot(playerCam.forward, Vector3.up) * Vector3.up;
@@ -223,8 +225,8 @@ public class VizControllerScript : MonoBehaviour
         if(currentFilters != null)
         {
             visScaled = false;
-            StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
-            StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+            StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100, selectWithConnections));
+            StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100, selectWithConnections));
         }
     }
     public void TouchpadInput(object sender, ControllerInteractionEventArgs e)
@@ -249,28 +251,49 @@ public class VizControllerScript : MonoBehaviour
 
     public void SelectWithConnections()
     {
-
+        selectWithConnections = true;
     }
     public void SelectWithoutConnections()
     {
-
+        selectWithConnections = false;
     }
-
-    public void ShowWEConnections()
+    public void ShowWEConnections(bool show)
     {
-
+        if (show)
+        {
+            if (!wordvis.showConnections)
+            {
+                wordvis.showConnections = true;
+                StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
+            }
+        }
+        else
+        {
+            if (wordvis.showConnections)
+            {
+                wordvis.showConnections = false;
+                StartCoroutine(wordvis.UpdateVisualization(currentFilters, visScaled, 100));
+            }
+        }
     }
-    public void HideWEConnections()
+    public void ShowKGConnections(bool show)
     {
-
-    }
-    public void ShowKGConnections()
-    {
-
-    }
-    public void HideKGConnections()
-    {
-
+        if (show)
+        {
+            if (!kgvis.showConnections)
+            {
+                kgvis.showConnections = true;
+                StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+            }
+        }
+        else
+        {
+            if (kgvis.showConnections)
+            {
+                kgvis.showConnections = false;
+                StartCoroutine(kgvis.UpdateVisualization(currentFilters, visScaled, 100));
+            }
+        }
     }
 
 

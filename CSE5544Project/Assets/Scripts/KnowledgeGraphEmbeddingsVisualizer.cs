@@ -65,12 +65,44 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
                 {
                     if (!f.Contains(pair.Value)) f.Add(pair.Value);
                 }
-                if (i % steps == 0)
+                if (i % steps == 0 && steps != 0)
                 {
-                    LoadingManager.instance.SetProgress("GetFilterSelectionKG", (float)i / particleToKey.Count, "Determining filter selection");
+                    LoadingManager.instance.SetProgress("GetFilterSelectionKG", 
+                        VizControllerScript.instance.selectWithConnections ? (float)i / (particleToKey.Count * 2) : (float)i / particleToKey.Count, 
+                        "Determining filter selection");
                     yield return null;
                 }
                 i++;
+            }
+            yield return null;
+            
+            if (VizControllerScript.instance.selectWithConnections)
+            {
+                List<string> filtersToAdd = new List<string>();
+                for(i = 0; i < VizControllerScript.instance.entries.Count; i++)
+                {
+                    if (f.Contains(VizControllerScript.instance.entries[i][0]))
+                    {
+                        if (!f.Contains(VizControllerScript.instance.entries[i][1]))
+                        {
+                            filtersToAdd.Add(VizControllerScript.instance.entries[i][1]);
+                        }
+                    }
+                    if (f.Contains(VizControllerScript.instance.entries[i][1]))
+                    {
+                        if (!f.Contains(VizControllerScript.instance.entries[i][0]))
+                        {
+                            filtersToAdd.Add(VizControllerScript.instance.entries[i][0]);
+                        }
+                    }
+                    if (i % (steps * 10) == 0 && steps != 0)
+                    {
+                        LoadingManager.instance.SetProgress("GetFilterSelectionKG", 0.5f + (float)i / (VizControllerScript.instance.entries.Count * 2),
+                            "Determining filter selection");
+                        yield return null;
+                    }
+                }
+                f.AddRange(filtersToAdd);
             }
             LoadingManager.instance.FinishedLoading("GetFilterSelectionKG");
             VizControllerScript.instance.UpdateFilters(f);
@@ -83,72 +115,84 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.name = "VisBounds";
         g.transform.position = new Vector3(-transform.localScale.x * width / 2f, -transform.localScale.y * width / 2f, 0);
         g.transform.localScale = new Vector3(width / 50f, width / 50f, width);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(transform.localScale.x * width / 2f, -transform.localScale.y * width / 2f, 0);
         g.transform.localScale = new Vector3(width / 50f, width / 50f, width);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(-transform.localScale.x * width / 2f, transform.localScale.y * width / 2f, 0);
         g.transform.localScale = new Vector3(width / 50f, width / 50f, width);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(transform.localScale.x * width / 2f, transform.localScale.y * width / 2f, 0);
         g.transform.localScale = new Vector3(width / 50f, width / 50f, width);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(-transform.localScale.x * width / 2f, 0, -transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width / 50f, width, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(-transform.localScale.x * width / 2f, 0, transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width / 50f, width, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(transform.localScale.x * width / 2f, 0, -transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width / 50f, width, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(transform.localScale.x * width / 2f, 0, transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width / 50f, width, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(0, -transform.localScale.y * width / 2f, -transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width, width / 50f, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(0, -transform.localScale.y * width / 2f, transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width, width / 50f, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(0, transform.localScale.y * width / 2f, -transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width, width / 50f, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         g.name = "VisBounds";
         g.transform.position = new Vector3(0, transform.localScale.y * width / 2f, transform.localScale.z * width / 2f);
         g.transform.localScale = new Vector3(width, width / 50f, width / 50f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         // "Glass Panes"
@@ -158,6 +202,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width, width, width / 500f);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -166,6 +211,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width, width, width / 500f);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -174,6 +220,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width, width / 500f, width);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -182,6 +229,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width, width / 500f, width);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -190,6 +238,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width / 500f, width, width);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
 
         g = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -198,6 +247,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         g.transform.localScale = new Vector3(width / 500f, width, width);
         g.GetComponent<Renderer>().material = boundsMaterial;
         g.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0.1f);
+        Destroy(g.GetComponent<BoxCollider>());
         g.transform.SetParent(transform, false);
     }
     public void PreProcessData()
@@ -239,13 +289,16 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
         }
         return c;
     }
-    public IEnumerator UpdateVisualization(List<string> filters = null, bool scaled = false, int numPerUpdate = 0)
+    public IEnumerator UpdateVisualization(List<string> filters = null, bool scaled = false, int numPerUpdate = 0, bool selectionWithConnections = false)
     {
         while (!loadedData || !colorsLoaded) yield return null;
 
         LoadingManager.instance.SetProgress("UpdateVisualizationKG", 0.01f, "Updating KG Visualization");
         ParticleSystem.MainModule mainModule = KnowledgeGraphEmbeddingsParticleSystem.main;
         ParticleSystem.MainModule connectionsMainModule = connectionsParticleSystem.main;
+
+        KnowledgeGraphEmbeddingsParticleSystem.SetParticles(new ParticleSystem.Particle[0], 0);
+        connectionsParticleSystem.SetParticles(new ParticleSystem.Particle[0], 0);
 
         int i = 0;
         if (filters == null || filters.Count == 0)
@@ -324,43 +377,47 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             
             if (numPerUpdate != 0 && i % numPerUpdate == 0)
             {
+                mainModule.maxParticles = particles.Length;
                 KnowledgeGraphEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
                 LoadingManager.instance.SetProgress("UpdateVisualizationKG", 0.2f + 0.8f * (float)i / filters.Count, "Updating KG Visualization");
                 yield return null;
             }
         }
+        mainModule.maxParticles = particles.Length;
         KnowledgeGraphEmbeddingsParticleSystem.SetParticles(particles, particles.Length);
         LoadingManager.instance.FinishedLoading("UpdateVisualizationKG");
         yield return null;
-        
+
         if (showConnections)
         {
             GameObject empty = new GameObject();
-
-            for (i = 0; i < VizControllerScript.instance.entries.Count; i++)
+            if (VizControllerScript.instance.predicatesSelected.Count > 0 || selectionWithConnections)
             {
-                if (VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2])
-                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][0])
-                    && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][1]))
+                for (i = 0; i < VizControllerScript.instance.entries.Count; i++)
                 {
-                    Vector3 pos1 = keyToParticle[VizControllerScript.instance.entries[i][0]].position;
-                    Vector3 pos2 = keyToParticle[VizControllerScript.instance.entries[i][1]].position;
+                    if ((VizControllerScript.instance.predicatesSelected.Contains(VizControllerScript.instance.entries[i][2]) || selectionWithConnections)
+                        && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][0])
+                        && keyToParticle.ContainsKey(VizControllerScript.instance.entries[i][1]))
+                    {
+                        Vector3 pos1 = keyToParticle[VizControllerScript.instance.entries[i][0]].position;
+                        Vector3 pos2 = keyToParticle[VizControllerScript.instance.entries[i][1]].position;
 
-                    ParticleSystem.Particle p = new ParticleSystem.Particle();
-                    p.position = (pos1 + pos2) / 2f;
-                    empty.transform.position = (pos1 + transform.position + pos2 + transform.position) / 2f;
-                    empty.transform.LookAt(pos2 + transform.position);
-                    p.rotation3D = empty.transform.eulerAngles;
-                    p.startSize3D = new Vector3(size / 10f, size / 10f, Vector3.Distance(pos1, pos2));
-                    p.startColor = Color.gray;
-                    connectionParticles.Add(p);
-                }
-                if (numPerUpdate != 0 && i % (numPerUpdate * 100) == 0)
-                {
-                    connectionsMainModule.maxParticles = connectionParticles.Count;
-                    connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
-                    LoadingManager.instance.SetProgress("UpdateVisualizationKGConnections", (float)i / VizControllerScript.instance.entries.Count, "Updating KG Visualization Connections");
-                    yield return null;
+                        ParticleSystem.Particle p = new ParticleSystem.Particle();
+                        p.position = (pos1 + pos2) / 2f;
+                        empty.transform.position = (pos1 + transform.position + pos2 + transform.position) / 2f;
+                        empty.transform.LookAt(pos2 + transform.position);
+                        p.rotation3D = empty.transform.eulerAngles;
+                        p.startSize3D = new Vector3(size / 10f, size / 10f, Vector3.Distance(pos1, pos2));
+                        p.startColor = Color.gray;
+                        connectionParticles.Add(p);
+                    }
+                    if (numPerUpdate != 0 && i % (numPerUpdate * 100) == 0)
+                    {
+                        connectionsMainModule.maxParticles = connectionParticles.Count;
+                        connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
+                        LoadingManager.instance.SetProgress("UpdateVisualizationKGConnections", (float)i / VizControllerScript.instance.entries.Count, "Updating KG Visualization Connections");
+                        yield return null;
+                    }
                 }
             }
             Destroy(empty);
@@ -368,6 +425,7 @@ public class KnowledgeGraphEmbeddingsVisualizer : MonoBehaviour
             connectionsParticleSystem.SetParticles(connectionParticles.ToArray(), connectionParticles.Count);
             LoadingManager.instance.FinishedLoading("UpdateVisualizationKGConnections");
         }
+        else connectionsMainModule.maxParticles = 0;
         yield return null;
     }
 }

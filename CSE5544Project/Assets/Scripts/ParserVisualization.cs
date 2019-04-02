@@ -11,6 +11,8 @@ public class ParserVisualization : MonoBehaviour
     public GameObject ContentPane;
     public GameObject TextPrefab, TextPrefabWithImage;
     public GameObject TopicsPane;
+    public TextMeshProUGUI WordCount;
+    public TextMeshProUGUI ConnectionCount;
 
     List<string> predicates;
     List<GameObject> predicateObjects;
@@ -188,6 +190,15 @@ public class ParserVisualization : MonoBehaviour
                         predicateObjects[i].SetActive(false);
                     }
                 }
+
+                int maxWordCount = Mathf.Max(WordEmbeddingsVisualizer.instance.WordEmbeddingsParticleSystem.main.maxParticles,
+                    KnowledgeGraphEmbeddingsVisualizer.instance.KnowledgeGraphEmbeddingsParticleSystem.main.maxParticles);
+                int maxConnectionCount = Mathf.Max(WordEmbeddingsVisualizer.instance.connectionsParticleSystem.main.maxParticles,
+                    KnowledgeGraphEmbeddingsVisualizer.instance.connectionsParticleSystem.main.maxParticles);
+
+                WordCount.text = maxWordCount != 0 ? "Word count: " + maxWordCount : "Word count: N/A";
+                ConnectionCount.text = maxConnectionCount != 0 ? "Connection count: " + maxConnectionCount : "Connection count: N/A";
+
                 lastTime = Time.time;
             }
             yield return null;
