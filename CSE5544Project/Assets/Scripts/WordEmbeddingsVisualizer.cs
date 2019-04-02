@@ -83,14 +83,14 @@ public class WordEmbeddingsVisualizer : MonoBehaviour
                 {
                     if (f.Contains(VizControllerScript.instance.entries[i][0]))
                     {
-                        if (!f.Contains(VizControllerScript.instance.entries[i][1]))
+                        if (!f.Contains(VizControllerScript.instance.entries[i][1]) && !filtersToAdd.Contains(VizControllerScript.instance.entries[i][1]))
                         {
                             filtersToAdd.Add(VizControllerScript.instance.entries[i][1]);
                         }
                     }
                     if (f.Contains(VizControllerScript.instance.entries[i][1]))
                     {
-                        if (!f.Contains(VizControllerScript.instance.entries[i][0]))
+                        if (!f.Contains(VizControllerScript.instance.entries[i][0]) && !filtersToAdd.Contains(VizControllerScript.instance.entries[i][0]))
                         {
                             filtersToAdd.Add(VizControllerScript.instance.entries[i][0]);
                         }

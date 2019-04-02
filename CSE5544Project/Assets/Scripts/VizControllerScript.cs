@@ -9,14 +9,9 @@ using UnityEngine.EventSystems;
 // 2D(Python and Unity) vs 3D visualization
     // Currency example
     // Find other examples
-// Selecting specific data
-// Show HUB with glyphs
-// Add selection + connectivity for KG 
-// Adding scaling/repositioning to the boxes
 
-// Show some statistics
-    // Max connectivity
-    // Num visualized words
+// Show HUB with glyphs
+
 
 public class VizControllerScript : MonoBehaviour
 {
