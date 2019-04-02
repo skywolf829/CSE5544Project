@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class StayInBounds : MonoBehaviour
 {
-    float xUpper = 4.7f;
-    float xLower = -4.7f;
-    float zUpper = 3.7f;
-    float zLower = -1.7f;
+    float xUpper = 5.8f;
+    float xLower = -5.8f;
+    float zUpper = 5.8f;
+    float zLower = -5.8f;
     private void Update()
     {
         if (transform.position.x >= xUpper)

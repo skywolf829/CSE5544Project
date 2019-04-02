@@ -11452,6 +11452,7 @@ GameObject:
   - component: {fileID: 734196685}
   - component: {fileID: 734196684}
   - component: {fileID: 734196683}
+  - component: {fileID: 734196687}
   m_Layer: 0
   m_Name: OVRCameraRig
   m_TagString: Untagged
@@ -11558,6 +11559,18 @@ Transform:
   m_Father: {fileID: 1866258680}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &734196687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734196682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c22b6eb6dba2e4289e79db815c83f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &739330449
 GameObject:
   m_ObjectHideFlags: 0
@@ -19144,6 +19157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1163912162}
   - component: {fileID: 1163912163}
+  - component: {fileID: 1163912164}
   m_Layer: 0
   m_Name: '[UnityBase_CameraRig]'
   m_TagString: Untagged
@@ -19181,6 +19195,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockPhysicsUpdateRateToRenderFrequency: 1
+--- !u!114 &1163912164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1163912161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c22b6eb6dba2e4289e79db815c83f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1181549254
 GameObject:
   m_ObjectHideFlags: 0
@@ -24446,6 +24472,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 796756056}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1310969782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310969780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c22b6eb6dba2e4289e79db815c83f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1319139306
 GameObject:
   m_ObjectHideFlags: 0
@@ -25501,7 +25539,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 256239895}
   m_HandleRect: {fileID: 256239894}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0.5
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -32817,6 +32855,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1813514678}
+  - component: {fileID: 1813514679}
   m_Layer: 0
   m_Name: '[WindowsMR_CameraRig]'
   m_TagString: Untagged
@@ -32840,6 +32879,18 @@ Transform:
   m_Father: {fileID: 104747867}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1813514679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813514677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c22b6eb6dba2e4289e79db815c83f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1830729400
 GameObject:
   m_ObjectHideFlags: 0
@@ -32955,6 +33006,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1838873253}
   - component: {fileID: 1838873254}
+  - component: {fileID: 1838873255}
   m_Layer: 0
   m_Name: '[VRSimulator_CameraRig]'
   m_TagString: Untagged
@@ -33029,6 +33081,18 @@ MonoBehaviour:
   startMenuAlias: 102
   touchModifier: 116
   hairTouchModifier: 104
+--- !u!114 &1838873255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838873252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c22b6eb6dba2e4289e79db815c83f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1856773563
 GameObject:
   m_ObjectHideFlags: 0
