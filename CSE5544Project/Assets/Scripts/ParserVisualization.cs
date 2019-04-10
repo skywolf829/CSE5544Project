@@ -127,8 +127,8 @@ public class ParserVisualization : MonoBehaviour
             GameObject t = Instantiate(TextPrefab);
             t.transform.SetParent(ContentPane.transform, false);
             t.GetComponent<TextMeshProUGUI>().text = predicates[i];
-            t.GetComponent<RectTransform>().localPosition = new Vector3(ContentPane.GetComponent<RectTransform>().rect.width / 2f, 
-                 - i * t.GetComponent<RectTransform>().rect.height - t.GetComponent<RectTransform>().rect.height / 2f, -10);
+            t.GetComponent<RectTransform>().localPosition = new Vector3(5 + ContentPane.GetComponent<RectTransform>().rect.width / 2f, 
+                 - i * t.GetComponent<RectTransform>().rect.height - t.GetComponent<RectTransform>().rect.height / 2f, 0);
             predicateObjects.Add(t);
         }
 
@@ -141,7 +141,7 @@ public class ParserVisualization : MonoBehaviour
             t.transform.SetParent(TopicsPane.transform, false);
             t.transform.GetChild(0).GetComponent<Image>().color = VizControllerScript.instance.colorsList[i];
             t.GetComponent<TextMeshProUGUI>().text = VizControllerScript.instance.topicsList[i];
-            t.GetComponent<RectTransform>().localPosition = new Vector3(TopicsPane.GetComponent<RectTransform>().rect.width / 2f,
+            t.GetComponent<RectTransform>().localPosition = new Vector3(5 + TopicsPane.GetComponent<RectTransform>().rect.width / 2f,
                 -i * t.GetComponent<RectTransform>().rect.height - t.GetComponent<RectTransform>().rect.height / 2f, 0);
 
         }
