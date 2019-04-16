@@ -3,8 +3,14 @@ import numpy as np
 from sklearn.decomposition import PCA
 import random
 
+
+
 with open('ent_col.pkl','rb') as f:
  x = pkl.load(f)
+
+print(list(x.keys())[0])
+
+exit(0)
 
 emb = []
 cols= []
@@ -50,5 +56,19 @@ for i in list(dic.keys()):
   z.append(emb[j][2])
  ax.scatter(x, y, z, c=i, marker='o')
  
+plt.show()
+
+for i in list(dic.keys()):
+ #if not i == '#CCCC00':
+ # continue
+ temp = dic[i]
+ x =[]
+ y =[]
+ z =[]
+ for j in temp:
+  x.append(emb[j][0])
+  y.append(emb[j][1])
+  z.append(emb[j][2])
+ plt.scatter(x, y, c=i, marker='o')
 
 plt.show()
