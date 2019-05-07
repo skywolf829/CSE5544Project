@@ -25,9 +25,9 @@ for i in list(x.keys()):
  temp = 100000
  for j in range(len(words)):
   if cosine(dic[words[j]],x[i]) < temp:
-   temp = cosine(dic[words[j]],x[i])
+   temp = euclidean(dic[words[j]],x[i])
    idx = j
  n_dic.update({i:[x[i],colors[idx],idx]})
 
-with open('ent_col.pkl','wb') as f:
+with open('ent_col_eu.pkl','wb') as f:
  pkl.dump(n_dic,f)
